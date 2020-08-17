@@ -1,0 +1,19 @@
+{
+  "transactions" : [
+    {
+      "user": "john",
+      "datetime": "2011-08-12T20:17:46.384Z",
+      "amount": 99
+    },
+    {
+      "user": "dan",
+      "datetime": "2012-02-18T00:11:23.123",
+      "amount": 99
+    },
+    {
+      "user": "chris",
+      "datetime": "2019-12-11T00:15:12.000",
+      "amount": 99
+    }
+  ]
+}
