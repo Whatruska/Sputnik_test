@@ -6,7 +6,10 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+
+import {Appbar, Divider, Provider as PaperProvider} from 'react-native-paper';
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,100 +17,65 @@ import {
   View,
   Text,
   StatusBar,
+  FlatList,
 } from 'react-native';
+import getFakeData from './dal/getFakeData';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [data, setData] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  useEffect(() => {
+    if (!fetching && !data.length) {
+      setFetching(true);
+      getFakeData
+        .then((resp) => {
+          setData(resp.data);
+        })
+        .catch((err) => {
+          alert('err');
+        })
+        .finally(() => {
+          setFetching(false);
+          alert('Finally');
+        });
+    }
+  });
 
-const App: () => React$Node = () => {
+  const renderItem = ({item}) => {
+    const {amount, user, datetime} = item;
+    return (
+      <View style={styles.listItem}>
+        <Text>{amount}</Text>
+        <Text>{user}</Text>
+        <Text>{datetime}</Text>
+        <Divider />
+      </View>
+    );
+  };
+
   return (
-    <>
+    <PaperProvider>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+      <Appbar.Header>
+        <Appbar.Content title="Test App" subtitle="Sputnik Software Test App" />
+      </Appbar.Header>
+      <View style={styles.container}>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={({user}) => user}
+        />
+      </View>
+    </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    backgroundColor: '#aaccbb',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  listItem: {
+    padding: 20,
   },
 });
 
