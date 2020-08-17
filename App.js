@@ -32,7 +32,7 @@ import getFakeData from './dal/getFakeData';
 
 const App = () => {
   const [data, setData] = useState([]);
-  const [item, setItem] = useState({});
+  const [selected, setSelected] = useState({});
 
   useEffect(() => {
     if (!data.length) {
@@ -54,7 +54,7 @@ const App = () => {
       <TouchableOpacity
         style={styles.listItem}
         onPress={() => {
-          setItem(item);
+          setSelected(item);
         }}>
         <Text style={styles.listItemText}>{user}</Text>
         <Divider
@@ -67,7 +67,7 @@ const App = () => {
     );
   };
 
-  const {amount, datetime, user} = item;
+  const {amount, datetime, user} = selected;
   const {width, height} = Dimensions.get('window');
 
   const EmptyComponent = (
@@ -87,9 +87,9 @@ const App = () => {
       <Portal>
         <Modal
           dismissable
-          visible={item.user}
+          visible={selected.user}
           onDismiss={() => {
-            setItem({});
+            setSelected({});
           }}
           contentContainerStyle={{
             backgroundColor: colors.background,
@@ -118,7 +118,7 @@ const App = () => {
               borderWidth: 2,
             }}
             onPress={() => {
-              setItem({});
+              setSelected({});
             }}>
             Hide
           </Button>
